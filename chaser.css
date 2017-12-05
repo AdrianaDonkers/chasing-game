@@ -2,3 +2,19 @@ canvas {
   border: 1px solid blue;
   margin: 20px;
 }
+
+progress {
+  width: 300px;
+}
+
+h1 {
+  font: 32px "Bungee";
+}
+
+body {
+    margin: 20px;
+}
+
+p {
+  font: 16px "Play", sans-serif;
+}
