@@ -1,14 +1,17 @@
 canvas {
   border: 1px solid blue;
-  margin: 20px;
+  margin-top: 10px;
 }
 
 progress {
   width: 300px;
 }
 
-h1 {
-  font: 32px "Bungee";
+header {
+  padding: 1em;
+  background-color: lightgrey;
+  font: 26px "Bungee";
+  text-align: center;
 }
 
 body {
