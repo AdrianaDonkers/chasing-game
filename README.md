@@ -1,2 +1,2 @@
 # chasing-game
-A Simple HTML Canvas Chasing Game https://adrianadonkers.github.io/chasing-game/ Created by: Adriana Donkers
+This is a simple HTML canvas chasing game created by Adriana Donkers. This link to play is: https://adrianadonkers.github.io/chasing-game/.
