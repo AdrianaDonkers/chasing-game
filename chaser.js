@@ -37,7 +37,7 @@ class NemoPlayer extends Sprite {
 let player = new NemoPlayer(
   getRandomLocation(0, canvas.width),
   getRandomLocation(0, canvas.height),
-  15,
+  20,
   0.07
 );
 
