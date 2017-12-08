@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Special+Elite');
-@import url('https://fonts.googleapis.com/css?family=Play');
-@import url('https://fonts.googleapis.com/css?family=Bungee');
+@import url("https://fonts.googleapis.com/css?family=Special+Elite");
+@import url("https://fonts.googleapis.com/css?family=Play");
+@import url("https://fonts.googleapis.com/css?family=Bungee");
 
 canvas {
   border: 1px solid blue;
@@ -12,14 +12,15 @@ progress {
 }
 
 header {
+  text-shadow: 2px 2px white;
   padding: 1em;
-  background-color: lightgrey;
+  background-image: url("https://s.blogcdn.com/news.moviefone.com/media/2013/06/r-finding-nemo-large570.jpg");
   font: 26px "Bungee";
   text-align: center;
 }
 
 body {
-    margin: 20px;
+  margin: 20px;
 }
 
 p {
