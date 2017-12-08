@@ -8,7 +8,7 @@ const sharkURL =
   "http://31.media.tumblr.com/70ec52596d1533f6f31137f6fa57432b/tumblr_mqqy4nxDvf1qe1uqko1_500.gif";
 const wormURL = "http://piq.codeus.net/static/media/userpics/piq_56496.png";
 const backgroundURL = "https://i.ytimg.com/vi/8EnTQADFz48/maxresdefault.jpg";
-const sharkRadius = 15;
+const sharkRadius = 20;
 
 function getRandomLocation(min, max) {
   min = Math.ceil(min);
