@@ -78,6 +78,7 @@ class Worm extends Sprite {
   }
 }
 let worms = [];
+let wormCount = 0;
 setInterval(function() {
   if (progressBar.Value !== 0) {
     worms.push(
@@ -132,6 +133,7 @@ function startGame() {
     progressBar.value = 100;
     Object.assign(player, { x: canvas.width / 2, y: canvas.height / 2 });
     player.draw();
+    wormCount = 0;
     enemies.length = 0;
     worms.length = 0;
     requestAnimationFrame(drawScene);
@@ -155,9 +157,11 @@ function updateScene() {
     if (haveCollided(worm, player)) {
       progressBar.value += 10;
       worms.splice(worms.indexOf(worm), 1);
+      wormCount++;
     }
   });
   document.getElementById("health").innerHTML = progressBar.value;
+  document.getElementById("score").innerHTML = wormCount;
 }
 
 function drawGameOver() {
