@@ -49,7 +49,7 @@ class SharkEnemy extends Sprite {
     Object.assign(this, { x, y, radius, speed });
   }
   draw() {
-    ctx.drawImage(this.image, this.x, this.y, 60, 30);
+    ctx.drawImage(this.image, this.x, this.y, 90, 45);
   }
 }
 let enemies = [];
