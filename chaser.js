@@ -1,30 +1,29 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const progressBar = document.querySelector("progress");
+
 const nemoURL =
   "https://vignette.wikia.nocookie.net/minecraftpocketedition/images/c/ca/Clownfish.png/revision/latest?cb=20140826095943";
 const sharkURL =
   "http://31.media.tumblr.com/70ec52596d1533f6f31137f6fa57432b/tumblr_mqqy4nxDvf1qe1uqko1_500.gif";
 const wormURL = "http://piq.codeus.net/static/media/userpics/piq_56496.png";
 const backgroundURL = "https://i.ytimg.com/vi/8EnTQADFz48/maxresdefault.jpg";
+const sharkRadius = 15;
 
-function distanceBetween(sprite1, sprite2) {
-  return Math.hypot(sprite1.x - sprite2.x, sprite1.y - sprite2.y);
+function getRandomLocation(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function haveCollided(sprite1, sprite2) {
-  return distanceBetween(sprite1, sprite2) < sprite1.radius + sprite2.radius;
-}
 class Sprite {
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
   }
 }
 
-class Player extends Sprite {
+class NemoPlayer extends Sprite {
   constructor(x, y, radius, speed) {
     super();
     this.image = new Image();
@@ -32,10 +31,15 @@ class Player extends Sprite {
     Object.assign(this, { x, y, radius, speed });
   }
   draw() {
-    ctx.drawImage(this.image, this.x, this.y, 30, 30);
+    ctx.drawImage(this.image, this.x, this.y, 40, 40);
   }
 }
-let player = new Player(250, 150, 15, 0.07);
+let player = new NemoPlayer(
+  getRandomLocation(0, canvas.width),
+  getRandomLocation(0, canvas.height),
+  15,
+  0.07
+);
 
 class Enemy extends Sprite {
   constructor(x, y, radius, speed) {
@@ -49,12 +53,41 @@ class Enemy extends Sprite {
   }
 }
 let enemies = [
-  new Enemy(80, 200, 20, 0.02),
-  new Enemy(200, 250, 20, 0.01),
-  new Enemy(150, 180, 20, 0.002)
+  new SharkEnemy(
+    getRandomLocation(0, canvas.width),
+    getRandomLocation(0, canvas.height),
+    sharkRadius,
+    0.027
+  ),
+  new SharkEnemy(
+    getRandomLocation(0, canvas.width),
+    getRandomLocation(0, canvas.height),
+    sharkRadius,
+    0.008
+  ),
+  new SharkEnemy(
+    getRandomLocation(0, canvas.width),
+    getRandomLocation(0, canvas.height),
+    sharkRadius,
+    0.013
+  )
 ];
 
-class FishFood extends Sprite {
+// let enemies = [];
+// setInterval(function() {
+//   if (progressBar.Value !== 0) {
+//     enemies.push(
+//       new SharkEnemy(
+//         getRandomLocation(0, canvas.width),
+//         getRandomLocation(0, canvas.height),
+//         sharkRadius,
+//         Number((Math.random() * (0.03 - 0.001) + 0.0001).toFixed(4))
+//       )
+//     );
+//   }
+// }, 7000);
+
+class Worm extends Sprite {
   constructor(x, y, radius) {
     super();
     this.image = new Image();
@@ -65,13 +98,18 @@ class FishFood extends Sprite {
     ctx.drawImage(this.image, this.x, this.y, 30, 30);
   }
 }
-function getRandomLocation(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 let worms = [];
-
+setInterval(function() {
+  if (progressBar.Value !== 0) {
+    worms.push(
+      new Worm(
+        getRandomLocation(0, canvas.width),
+        getRandomLocation(0, canvas.height),
+        15
+      )
+    );
+  }
+}, 3000);
 let mouse = { x: 0, y: 0 };
 document.body.addEventListener("mousemove", updateMouse);
 function updateMouse(event) {
@@ -79,10 +117,15 @@ function updateMouse(event) {
   mouse.x = event.clientX - left;
   mouse.y = event.clientY - top;
 }
-
 function moveToward(leader, follower, speed) {
   follower.x += (leader.x - follower.x) * speed;
   follower.y += (leader.y - follower.y) * speed;
+}
+function distanceBetween(sprite1, sprite2) {
+  return Math.hypot(sprite1.x - sprite2.x, sprite1.y - sprite2.y);
+}
+function haveCollided(sprite1, sprite2) {
+  return distanceBetween(sprite1, sprite2) < sprite1.radius + sprite2.radius;
 }
 function pushOff(c1, c2) {
   let [dx, dy] = [c2.x - c1.x, c2.y - c1.y];
@@ -111,27 +154,23 @@ function startGame() {
 function updateScene() {
   moveToward(mouse, player, player.speed);
   enemies.forEach(enemy => moveToward(player, enemy, enemy.speed));
-  enemies.forEach((enemy, i) =>
-    pushOff(enemy, enemies[(i + 1) % enemies.length])
-  );
+  for (let i = 0; i < enemies.length; i++) {
+    for (let j = i + 1; j < enemies.length; j++) {
+      pushOff(enemies[i], enemies[j]);
+    }
+  }
   enemies.forEach(enemy => {
     if (haveCollided(enemy, player)) {
       progressBar.value -= 2;
     }
   });
-  worms.forEach(fishFood => {
-    if (haveCollided(fishFood, player)) {
-      progressBar.value += 2;
-      worms.splice(worms.indexOf(fishFood), 1);
+  worms.forEach(worm => {
+    if (haveCollided(worm, player)) {
+      progressBar.value += 10;
+      worms.splice(worms.indexOf(worm), 1);
     }
   });
   document.getElementById("health").innerHTML = progressBar.value;
-}
-
-function clearBackground() {
-  let background = new Image();
-  background.src = backgroundURL;
-  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 }
 
 function drawGameOver() {
@@ -144,23 +183,11 @@ function drawGameOver() {
   ctx.fillText("Click To Play Again", canvas.width / 2, canvas.height / 1.5);
 }
 
-let fishInterval = setInterval(function() {
-  if (progressBar.Value !== 0) {
-    worms.push(
-      new FishFood(
-        getRandomLocation(0, canvas.width),
-        getRandomLocation(0, canvas.height),
-        15
-      )
-    );
-  }
-}, 3000);
-
 function drawScene() {
   clearBackground();
   player.draw();
   enemies.forEach(enemy => enemy.draw());
-  worms.forEach(fishFood => fishFood.draw());
+  worms.forEach(worm => worm.draw());
   updateScene();
   if (progressBar.value > 0) {
     requestAnimationFrame(drawScene);
