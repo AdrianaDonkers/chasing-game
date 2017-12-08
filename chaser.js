@@ -41,7 +41,7 @@ let player = new NemoPlayer(
   0.07
 );
 
-class Enemy extends Sprite {
+class SharkEnemy extends Sprite {
   constructor(x, y, radius, speed) {
     super();
     this.image = new Image();
@@ -52,40 +52,19 @@ class Enemy extends Sprite {
     ctx.drawImage(this.image, this.x, this.y, 60, 30);
   }
 }
-let enemies = [
-  new SharkEnemy(
-    getRandomLocation(0, canvas.width),
-    getRandomLocation(0, canvas.height),
-    sharkRadius,
-    0.027
-  ),
-  new SharkEnemy(
-    getRandomLocation(0, canvas.width),
-    getRandomLocation(0, canvas.height),
-    sharkRadius,
-    0.008
-  ),
-  new SharkEnemy(
-    getRandomLocation(0, canvas.width),
-    getRandomLocation(0, canvas.height),
-    sharkRadius,
-    0.013
-  )
-];
-
-// let enemies = [];
-// setInterval(function() {
-//   if (progressBar.Value !== 0) {
-//     enemies.push(
-//       new SharkEnemy(
-//         getRandomLocation(0, canvas.width),
-//         getRandomLocation(0, canvas.height),
-//         sharkRadius,
-//         Number((Math.random() * (0.03 - 0.001) + 0.0001).toFixed(4))
-//       )
-//     );
-//   }
-// }, 7000);
+let enemies = [];
+setInterval(function() {
+  if (progressBar.Value !== 0) {
+    enemies.push(
+      new SharkEnemy(
+        getRandomLocation(0, canvas.width),
+        getRandomLocation(0, canvas.height),
+        sharkRadius,
+        Number((Math.random() * (0.03 - 0.001) + 0.0001).toFixed(4))
+      )
+    );
+  }
+}, 7000);
 
 class Worm extends Sprite {
   constructor(x, y, radius) {
@@ -110,6 +89,7 @@ setInterval(function() {
     );
   }
 }, 3000);
+
 let mouse = { x: 0, y: 0 };
 document.body.addEventListener("mousemove", updateMouse);
 function updateMouse(event) {
@@ -141,11 +121,18 @@ function pushOff(c1, c2) {
   }
 }
 
+function clearBackground() {
+  let background = new Image();
+  background.src = backgroundURL;
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+}
+
 function startGame() {
   if (progressBar.value === 0) {
     progressBar.value = 100;
     Object.assign(player, { x: canvas.width / 2, y: canvas.height / 2 });
     player.draw();
+    enemies.length = 0;
     worms.length = 0;
     requestAnimationFrame(drawScene);
   }
