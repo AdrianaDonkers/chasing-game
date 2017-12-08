@@ -8,7 +8,13 @@
     <header>
       <h1>Save Nemo</h1>
     </header>
-    <div id="progress"><p>Health<progress min=0 max=100 value=100></progress></p></div>
+    <div>
+      <p>Health:
+        <progress id="progress" min=0 max=100 value=100>
+        </progress><span id="health">
+        </span> %
+      </p>
+    </div>
     <canvas width="800" height="800"></canvas>
     <script src="chaser.js"></script>
   </body>
