@@ -2,13 +2,13 @@ const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const progressBar = document.querySelector("progress");
 
-const nemoURL =
+const playerURL =
   "https://vignette.wikia.nocookie.net/minecraftpocketedition/images/c/ca/Clownfish.png/revision/latest?cb=20140826095943";
-const sharkURL =
+const enemyURL =
   "http://31.media.tumblr.com/70ec52596d1533f6f31137f6fa57432b/tumblr_mqqy4nxDvf1qe1uqko1_500.gif";
-const wormURL = "http://piq.codeus.net/static/media/userpics/piq_56496.png";
+const bonusURL = "http://piq.codeus.net/static/media/userpics/piq_56496.png";
 const backgroundURL = "https://i.ytimg.com/vi/8EnTQADFz48/maxresdefault.jpg";
-const sharkRadius = 20;
+const enemyRadius = 20;
 
 function getRandomLocation(min, max) {
   min = Math.ceil(min);
@@ -23,29 +23,29 @@ class Sprite {
   }
 }
 
-class NemoPlayer extends Sprite {
+class Player extends Sprite {
   constructor(x, y, radius, speed) {
     super();
     this.image = new Image();
-    this.image.src = nemoURL;
+    this.image.src = playerURL;
     Object.assign(this, { x, y, radius, speed });
   }
   draw() {
     ctx.drawImage(this.image, this.x, this.y, 40, 40);
   }
 }
-let player = new NemoPlayer(
+let player = new Player(
   getRandomLocation(0, canvas.width),
   getRandomLocation(0, canvas.height),
   20,
   0.07
 );
 
-class SharkEnemy extends Sprite {
+class Enemy extends Sprite {
   constructor(x, y, radius, speed) {
     super();
     this.image = new Image();
-    this.image.src = sharkURL;
+    this.image.src = enemyURL;
     Object.assign(this, { x, y, radius, speed });
   }
   draw() {
@@ -56,33 +56,33 @@ let enemies = [];
 setInterval(function() {
   if (progressBar.Value !== 0) {
     enemies.push(
-      new SharkEnemy(
+      new Enemy(
         getRandomLocation(0, canvas.width),
         getRandomLocation(0, canvas.height),
-        sharkRadius,
+        enemyRadius,
         Number((Math.random() * (0.03 - 0.001) + 0.0001).toFixed(4))
       )
     );
   }
 }, 7000);
 
-class Worm extends Sprite {
+class Bonus extends Sprite {
   constructor(x, y, radius) {
     super();
     this.image = new Image();
-    this.image.src = wormURL;
+    this.image.src = bonusURL;
     Object.assign(this, { x, y, radius });
   }
   draw() {
     ctx.drawImage(this.image, this.x, this.y, 30, 30);
   }
 }
-let worms = [];
-let wormCount = 0;
+let bonuses = [];
+let bonusCount = 0;
 setInterval(function() {
   if (progressBar.Value !== 0) {
-    worms.push(
-      new Worm(
+    bonuses.push(
+      new Bonus(
         getRandomLocation(0, canvas.width),
         getRandomLocation(0, canvas.height),
         15
@@ -133,9 +133,9 @@ function startGame() {
     progressBar.value = 100;
     Object.assign(player, { x: canvas.width / 2, y: canvas.height / 2 });
     player.draw();
-    wormCount = 0;
+    bonusCount = 0;
     enemies.length = 0;
-    worms.length = 0;
+    bonuses.length = 0;
     requestAnimationFrame(drawScene);
   }
 }
@@ -153,15 +153,15 @@ function updateScene() {
       progressBar.value -= 2;
     }
   });
-  worms.forEach(worm => {
-    if (haveCollided(worm, player)) {
-      progressBar.value += 10;
-      worms.splice(worms.indexOf(worm), 1);
-      wormCount++;
+  bonuses.forEach(bonus => {
+    if (haveCollided(bonus, player)) {
+      progressBar.value += 5;
+      bonuses.splice(bonuses.indexOf(bonus), 1);
+      bonusCount++;
     }
   });
   document.getElementById("health").innerHTML = progressBar.value;
-  document.getElementById("score").innerHTML = wormCount;
+  document.getElementById("score").innerHTML = bonusCount;
 }
 
 function drawGameOver() {
@@ -178,7 +178,7 @@ function drawScene() {
   clearBackground();
   player.draw();
   enemies.forEach(enemy => enemy.draw());
-  worms.forEach(worm => worm.draw());
+  bonuses.forEach(bonus => bonus.draw());
   updateScene();
   if (progressBar.value > 0) {
     requestAnimationFrame(drawScene);
